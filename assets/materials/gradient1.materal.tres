@@ -1,0 +1,11 @@
+[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://imx3u3umvo6m"]
+
+[sub_resource type="Gradient" id="Gradient_fxy0k"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_c1nxn"]
+gradient = SubResource("Gradient_fxy0k")
+fill_to = Vector2(1, 1)
+
+[resource]
+albedo_texture = SubResource("GradientTexture2D_c1nxn")
+uv1_triplanar = true

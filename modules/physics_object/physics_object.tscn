@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://dif8rvindyxw5"]
+
+[ext_resource type="Script" uid="uid://ba1dkvqsvduln" path="res://modules/physics_object/physics_object.gd" id="1_i8lye"]
+[ext_resource type="PackedScene" uid="uid://lywe52lr8fw7" path="res://assets/models/objects/table.glb" id="2_eb6n5"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_1qvqp"]
+
+[node name="PhysicsObject" type="RigidBody3D"]
+collision_layer = 4
+collision_mask = 3
+mass = 15.0
+physics_material_override = SubResource("PhysicsMaterial_1qvqp")
+gravity_scale = 0.0
+contact_monitor = true
+max_contacts_reported = 1
+script = ExtResource("1_i8lye")
+
+[node name="blockbench_export" parent="." instance=ExtResource("2_eb6n5")]

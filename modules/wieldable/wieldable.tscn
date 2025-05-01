@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://bcqg7dq52goqk"]
+
+[ext_resource type="Script" uid="uid://s3cxmv3dfon6" path="res://modules/wieldable/rearranger.gd" id="1_lstch"]
+[ext_resource type="PackedScene" uid="uid://diq6t8xmwqhov" path="res://assets/models/wieldables/crowbar/crowbar_01_1k.gltf" id="1_yoaw4"]
+
+[node name="Wieldable" type="Node3D"]
+script = ExtResource("1_lstch")
+
+[node name="crowbar_01_1k" parent="." instance=ExtResource("1_yoaw4")]

@@ -1,0 +1,246 @@
+[gd_scene load_steps=26 format=3 uid="uid://bm28c7ufqq325"]
+
+[ext_resource type="PackedScene" uid="uid://rx21anmlp61m" path="res://modules/player/player.tscn" id="1_r1ghw"]
+[ext_resource type="Environment" uid="uid://b8mggfbmtah8k" path="res://assets/environment.tres" id="2_03k7t"]
+[ext_resource type="Shader" uid="uid://07qiloxtb1jy" path="res://assets/shaders/animated_noise.gdshader" id="2_vl20j"]
+[ext_resource type="Material" uid="uid://c5i0k16frxv02" path="res://assets/shaders/animated_noise.tres" id="3_7iyac"]
+[ext_resource type="Shader" uid="uid://cbgtd66t4u724" path="res://assets/shaders/fog1.gdshader" id="3_iv3gm"]
+[ext_resource type="PackedScene" uid="uid://bpajughmqy6x" path="res://modules/debug/marker.tscn" id="6_57ako"]
+[ext_resource type="PackedScene" uid="uid://dif8rvindyxw5" path="res://modules/physics_object/physics_object.tscn" id="7_xcvn6"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_48eik"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_0t3mw"]
+noise = SubResource("FastNoiseLite_48eik")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_irqlb"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_36q6d"]
+noise = SubResource("FastNoiseLite_irqlb")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fqqto"]
+render_priority = 0
+shader = ExtResource("2_vl20j")
+shader_parameter/noise = SubResource("NoiseTexture2D_0t3mw")
+shader_parameter/uv1_blend_sharpness = 1.0
+shader_parameter/uv1_scale = Vector3(0, 0, 0)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_blend_sharpness = 1.0
+shader_parameter/uv2_scale = Vector3(0.2, 0.2, 0.2)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+shader_parameter/texture_albedo = SubResource("NoiseTexture2D_36q6d")
+
+[sub_resource type="PrismMesh" id="PrismMesh_2cwwu"]
+size = Vector3(20, 4, 5)
+
+[sub_resource type="Gradient" id="Gradient_m6mv0"]
+offsets = PackedFloat32Array(0.335616, 0.479452)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_n47sn"]
+
+[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_gw4gb"]
+width = 160
+height = 160
+depth = 160
+color_ramp = SubResource("Gradient_m6mv0")
+noise = SubResource("FastNoiseLite_n47sn")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bqya6"]
+shader = ExtResource("3_iv3gm")
+shader_parameter/noise = SubResource("NoiseTexture3D_gw4gb")
+shader_parameter/p1 = 0.01
+
+[sub_resource type="QuadMesh" id="QuadMesh_ex8gd"]
+size = Vector2(10, 10)
+
+[sub_resource type="BoxMesh" id="BoxMesh_gkerl"]
+size = Vector3(2, 2, 2)
+
+[sub_resource type="Shader" id="Shader_iusa8"]
+code = "// NOTE: Shader automatically converted from Godot Engine 4.2.2.stable's StandardMaterial3D.
+
+shader_type spatial;
+render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx;
+uniform vec4 albedo : source_color;
+uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
+uniform float point_size : hint_range(0,128);
+uniform float roughness : hint_range(0,1);
+uniform sampler2D texture_metallic : hint_default_white,filter_linear_mipmap,repeat_enable;
+uniform vec4 metallic_texture_channel;
+uniform sampler2D texture_roughness : hint_roughness_r,filter_linear_mipmap,repeat_enable;
+uniform float specular;
+uniform float metallic;
+uniform sampler2D texture_normal : hint_roughness_normal,filter_linear_mipmap,repeat_enable;
+uniform float normal_scale : hint_range(-16,16);
+varying vec3 uv1_triplanar_pos;
+varying vec3 uv2_triplanar_pos;
+uniform float uv1_blend_sharpness;
+varying vec3 uv1_power_normal;
+uniform float uv2_blend_sharpness;
+varying vec3 uv2_power_normal;
+uniform vec3 uv1_scale;
+uniform vec3 uv1_offset;
+uniform vec3 uv2_scale;
+uniform vec3 uv2_offset;
+
+
+void vertex() {
+	vec3 normal = MODEL_NORMAL_MATRIX * NORMAL;
+	TANGENT = vec3(0.0,0.0,-1.0) * abs(normal.x);
+	TANGENT+= vec3(1.0,0.0,0.0) * abs(normal.y);
+	TANGENT+= vec3(1.0,0.0,0.0) * abs(normal.z);
+	TANGENT = inverse(MODEL_NORMAL_MATRIX) * normalize(TANGENT);
+	BINORMAL = vec3(0.0,1.0,0.0) * abs(normal.x);
+	BINORMAL+= vec3(0.0,0.0,-1.0) * abs(normal.y);
+	BINORMAL+= vec3(0.0,1.0,0.0) * abs(normal.z);
+	BINORMAL = inverse(MODEL_NORMAL_MATRIX) * normalize(BINORMAL);
+	uv1_power_normal=pow(abs(normal),vec3(uv1_blend_sharpness));
+	uv1_triplanar_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0f)).xyz * uv1_scale + uv1_offset;
+	uv1_power_normal/=dot(uv1_power_normal,vec3(1.0));
+	uv1_triplanar_pos *= vec3(1.0,-1.0, 1.0);
+	uv2_power_normal=pow(abs(NORMAL), vec3(uv2_blend_sharpness));
+	uv2_triplanar_pos = VERTEX * uv2_scale + uv2_offset;
+	uv2_power_normal/=dot(uv2_power_normal,vec3(1.0));
+	uv2_triplanar_pos *= vec3(1.0,-1.0, 1.0);
+}
+
+
+
+
+vec4 triplanar_texture(sampler2D p_sampler,vec3 p_weights,vec3 p_triplanar_pos) {
+	vec4 samp=vec4(0.0);
+	samp+= texture(p_sampler,p_triplanar_pos.xy) * p_weights.z;
+	samp+= texture(p_sampler,p_triplanar_pos.xz) * p_weights.y;
+	samp+= texture(p_sampler,p_triplanar_pos.zy * vec2(-1.0,1.0)) * p_weights.x;
+	return samp;
+}
+
+
+void fragment() {
+	vec4 albedo_tex = triplanar_texture(texture_albedo,uv1_power_normal,uv1_triplanar_pos);
+	ALBEDO = albedo.rgb * albedo_tex.rgb;
+	float metallic_tex = dot(triplanar_texture(texture_metallic,uv1_power_normal,uv1_triplanar_pos),metallic_texture_channel);
+	METALLIC = metallic_tex * metallic;
+	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
+	float roughness_tex = dot(triplanar_texture(texture_roughness,uv1_power_normal,uv1_triplanar_pos),roughness_texture_channel);
+	ROUGHNESS = roughness_tex * roughness;
+	SPECULAR = specular;
+	NORMAL_MAP = triplanar_texture(texture_normal,uv1_power_normal,uv1_triplanar_pos).rgb;
+	NORMAL_MAP_DEPTH = normal_scale;
+}
+"
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_xcj3x"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_b3foo"]
+noise = SubResource("FastNoiseLite_xcj3x")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ddm4g"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_33te6"]
+as_normal_map = true
+noise = SubResource("FastNoiseLite_ddm4g")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hk4de"]
+render_priority = 0
+shader = SubResource("Shader_iusa8")
+shader_parameter/albedo = Color(1, 0.482353, 1, 1)
+shader_parameter/texture_albedo = SubResource("NoiseTexture2D_b3foo")
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = Vector4(0, 0, 0, 0)
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/texture_normal = SubResource("NoiseTexture2D_33te6")
+shader_parameter/normal_scale = 1.0
+shader_parameter/uv1_blend_sharpness = 1.0
+shader_parameter/uv2_blend_sharpness = 1.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+
+[node name="Game" type="Node3D"]
+
+[node name="Player" parent="." instance=ExtResource("1_r1ghw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, -1, 8)
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+material_override = SubResource("ShaderMaterial_fqqto")
+use_collision = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -7.5, 0)
+size = Vector3(100, 8, 100)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, -0.5, -7)
+size = Vector3(15, 8, 15)
+metadata/_edit_group_ = true
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, -0.5, -7)
+operation = 2
+size = Vector3(13, 6, 13)
+metadata/_edit_group_ = true
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, -0.5, 0)
+visible = false
+operation = 2
+size = Vector3(3, 4, 1)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17, -0.5, 0)
+visible = false
+operation = 2
+size = Vector3(3, 4, 1)
+
+[node name="CSGBox3D7" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1, 0)
+operation = 2
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 6, -1.5, -8)
+operation = 2
+size = Vector3(3, 4, 1)
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 14)
+mesh = SubResource("PrismMesh_2cwwu")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("2_03k7t")
+
+[node name="FogVolume" type="FogVolume" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, -1, 5)
+size = Vector3(5, 3, 6)
+material = SubResource("ShaderMaterial_bqya6")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.996619, -0.0505879, 0.0647449, 0, 0.787989, 0.615689, -0.0821646, -0.613607, 0.785325, 0, 5, 0)
+light_volumetric_fog_energy = 1000.0
+shadow_enabled = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("QuadMesh_ex8gd")
+surface_material_override/0 = ExtResource("3_7iyac")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 5, -2)
+mesh = SubResource("BoxMesh_gkerl")
+surface_material_override/0 = SubResource("ShaderMaterial_hk4de")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="."]
+transform = Transform3D(-0.5, 0.612372, -0.612372, 3.09086e-08, 0.707107, 0.707107, 0.866025, 0.353553, -0.353553, 0, 0, -8)
+light_color = Color(0.983903, 0.0903248, 0.390043, 1)
+light_energy = 16.0
+shadow_enabled = true
+spot_range = 28.566
+
+[node name="Node3D" parent="." instance=ExtResource("6_57ako")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
+
+[node name="PhysicsObject" parent="." instance=ExtResource("7_xcvn6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, -2, 0)

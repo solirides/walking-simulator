@@ -1,0 +1,21 @@
+[gd_resource type="Environment" load_steps=3 format=3 uid="uid://b8mggfbmtah8k"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7uomk"]
+
+[sub_resource type="Sky" id="Sky_ycmvf"]
+sky_material = SubResource("ProceduralSkyMaterial_7uomk")
+
+[resource]
+background_mode = 2
+sky = SubResource("Sky_ycmvf")
+ambient_light_sky_contribution = 0.0
+ambient_light_energy = 0.0
+tonemap_mode = 2
+ssr_enabled = true
+ssil_enabled = true
+sdfgi_enabled = true
+sdfgi_read_sky_light = false
+sdfgi_min_cell_size = 0.1
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.0
+volumetric_fog_anisotropy = 0.5
