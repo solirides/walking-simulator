@@ -1,0 +1,52 @@
+[gd_scene load_steps=7 format=3 uid="uid://b138afyswbrrj"]
+
+[ext_resource type="Material" uid="uid://cgqkx4ojlnnqr" path="res://modules/terrain/terrain_material.tres" id="1_0rasl"]
+[ext_resource type="Script" uid="uid://dxmbj8rasepwv" path="res://modules/terrain/terrain.gd" id="1_kn0b6"]
+[ext_resource type="Environment" uid="uid://b8mggfbmtah8k" path="res://assets/environment.tres" id="1_uf4vd"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_7nt5j"]
+subdivide_width = 100
+subdivide_depth = 100
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_jioox"]
+
+[sub_resource type="HeightMapShape3D" id="HeightMapShape3D_kn0b6"]
+map_data = PackedFloat32Array(4.49, 6.345, 10.5, 7.055)
+
+[node name="Terrain" type="Node3D" node_paths=PackedStringArray("terrain", "collision", "timer")]
+script = ExtResource("1_kn0b6")
+terrain = NodePath("Mesh")
+collision = NodePath("StaticBody3D/CollisionShape3D")
+timer = NodePath("Timer")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("1_uf4vd")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.622608, 0.0362342, 0.781694, 0.60196, 0.660445, 0.448838, -0.500003, 0.749999, -0.43301, 0, 37.333, 0)
+light_color = Color(0.960299, 0.961338, 0.953577, 1)
+shadow_enabled = true
+
+[node name="Timer" type="Timer" parent="."]
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1000, 0, 0, 0, 1000, 0, 0, 0, 1000, 0, 0, 0)
+mesh = SubResource("PlaneMesh_7nt5j")
+surface_material_override/0 = ExtResource("1_0rasl")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 17.3092, -4.06619)
+visible = false
+mesh = SubResource("CapsuleMesh_jioox")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+collision_layer = 7
+collision_mask = 7
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("HeightMapShape3D_kn0b6")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.812033, 0.583612, 0, -0.583612, 0.812033, -30.637, 157.554, 373.891)
+
+[connection signal="ready" from="Mesh" to="." method="_on_mesh_instance_3d_ready"]

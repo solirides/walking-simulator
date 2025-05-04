@@ -13,11 +13,16 @@ config_version=5
 config/name="mediocre graphics"
 run/main_scene="res://scenes/game.tscn"
 config/features=PackedStringArray("4.4", "Forward Plus")
+run/max_fps=60
 config/icon="res://icon.svg"
 
 [autoload]
 
 Debug="*res://modules/debug/debug.gd"
+
+[display]
+
+window/vsync/vsync_mode=0
 
 [input]
 
@@ -101,7 +106,7 @@ snap_gravity={
 [physics]
 
 common/physics_jitter_fix=0.0
-3d/physics_engine="JoltPhysics3D"
+3d/physics_engine="Jolt Physics"
 common/physics_interpolation=true
 
 [rendering]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://bm28c7ufqq325"]
+[gd_scene load_steps=27 format=3 uid="uid://bm28c7ufqq325"]
 
 [ext_resource type="PackedScene" uid="uid://rx21anmlp61m" path="res://modules/player/player.tscn" id="1_r1ghw"]
 [ext_resource type="Environment" uid="uid://b8mggfbmtah8k" path="res://assets/environment.tres" id="2_03k7t"]
@@ -7,6 +7,7 @@
 [ext_resource type="Shader" uid="uid://cbgtd66t4u724" path="res://assets/shaders/fog1.gdshader" id="3_iv3gm"]
 [ext_resource type="PackedScene" uid="uid://bpajughmqy6x" path="res://modules/debug/marker.tscn" id="6_57ako"]
 [ext_resource type="PackedScene" uid="uid://dif8rvindyxw5" path="res://modules/physics_object/physics_object.tscn" id="7_xcvn6"]
+[ext_resource type="PackedScene" uid="uid://b138afyswbrrj" path="res://modules/terrain/terrain.tscn" id="8_gee14"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_48eik"]
 
@@ -162,12 +163,16 @@ shader_parameter/uv2_offset = Vector3(0, 0, 0)
 
 [node name="Game" type="Node3D"]
 
+[node name="Terrain" parent="." node_paths=PackedStringArray("player") instance=ExtResource("8_gee14")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -29.9462, 0)
+player = NodePath("../Player")
+
 [node name="Player" parent="." instance=ExtResource("1_r1ghw")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, -1, 8)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 87.2337, 0)
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+visible = false
 material_override = SubResource("ShaderMaterial_fqqto")
-use_collision = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -7.5, 0)
@@ -219,6 +224,7 @@ material = SubResource("ShaderMaterial_bqya6")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.996619, -0.0505879, 0.0647449, 0, 0.787989, 0.615689, -0.0821646, -0.613607, 0.785325, 0, 5, 0)
+visible = false
 light_volumetric_fog_energy = 1000.0
 shadow_enabled = true
 

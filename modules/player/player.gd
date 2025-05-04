@@ -59,6 +59,7 @@ func _ready():
 	last_camera_pos = camera.position
 	camera_pos = camera.position
 	camera.fov = fov
+	camera.make_current()
 	#smooth_camera.make_current()
 	#add_constant_central_force(gravity * self.mass * Vector3(0, -1, 0))
 	constant_force = gravity * self.mass * down_direction
@@ -92,22 +93,7 @@ func _physics_process(delta):
 	time_delta = delta
 	#last_camera_pos = camera_pos
 	#camera_pos = camera.global_position
-	if Input.is_action_pressed("snap_gravity"):
-		var target = closest_axis(camera.global_transform.basis.z.normalized())
-		if target != down_direction:
-			var rot_p = camera_pivot.global_rotation
-			var rot = camera.global_rotation
-			self.rotate(-down_direction.cross(target).normalized(), PI/2)
-			down_direction = -target
-			constant_force = down_direction * gravity * self.mass
-			#camera.global_rotation = rot
-			#camera.rotation.z = 0
-			#camera.global_rotation.x = rot.x
-			#camera.rotation.y = 0
-			#camera.rotation.z = 0
-			#camera_pivot.global_rotation.y = rot.y
-			#camera.rotation.x = 0
-			#camera.rotation.z = 0
+
 	
 	
 	var direction = Vector3.ZERO
@@ -177,11 +163,13 @@ func _integrate_forces(state):
 				#axis[j] = 1
 				# velocity in direction
 				if abs(linear_velocity.dot(axis)) < 0.1:
-					apply_central_force(-normal.x * mass * gravity * axis)
+					#apply_central_force(-normal.x * mass * gravity * axis)
+					apply_central_force(-normal.dot(axis) * mass * gravity * axis)
 					linear_velocity -= linear_velocity.dot(axis) * axis
 					fix = true
 			if fix:
-				apply_central_force(Vector3(0, mass * gravity * (1 - normal.y), 0))
+				apply_central_force(mass * gravity * (1 + normal.dot(down_direction)) * -(down_direction))
+				#apply_central_force(Vector3(0, mass * gravity * (1 - normal.y), 0))
 	
 	# not considering down direction
 	#var normal = state.get_contact_local_normal(i)
@@ -241,6 +229,35 @@ func roll(direction:Vector3):
 	constant_force = down_direction * gravity * self.mass
 	roll_queued = false
 
+func snap_gravity(target:Vector3):
+	if target == down_direction:
+		return
+	var rot_p = camera_pivot.global_rotation
+	var rot = camera.global_rotation
+	
+	if target == -down_direction:
+		#self.rotate(down_direction.cross(target).normalized(), PI)
+		pass
+	else:
+		self.rotate(down_direction.cross(target).normalized(), PI/2)
+		down_direction = target
+		constant_force = down_direction * gravity * self.mass
+
+		camera_pivot.global_rotation = rot
+		camera_pivot.rotation.x = 0
+		camera_pivot.rotation.z = 0
+		camera.global_rotation = rot
+		camera.rotation.z = 0
+		
+		#camera.global_rotation = rot
+		#camera.rotation.z = 0
+		#camera.global_rotation.x = rot.x
+		#camera.rotation.y = 0
+		#camera.rotation.z = 0
+		#camera_pivot.global_rotation.y = rot.y
+		#camera.rotation.x = 0
+		#camera.rotation.z = 0
+
 func closest_axis(direction) -> Vector3:
 	var a = 0
 	var sign = sign(direction.x)
@@ -276,8 +293,8 @@ func _input(event):
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
 	if event is InputEventMouseMotion:
-		camera_pivot.rotation.y += (deg_to_rad(-event.relative.x * mouse_sensitivity))
-		camera.rotate_x(deg_to_rad(-event.relative.y * mouse_sensitivity))
+		camera_pivot.rotate_y(deg_to_rad(-event.screen_relative.x * mouse_sensitivity))
+		camera.rotate_x(deg_to_rad(-event.screen_relative.y * mouse_sensitivity))
 		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90))
 	
 	if Input.is_action_just_pressed("toggle_perspective"):
@@ -295,6 +312,11 @@ func _input(event):
 	if Input.is_action_just_released("roll_right"):
 		roll_queued = true
 		roll_direction = 1
+	
+	if Input.is_action_just_pressed("snap_gravity"):
+		var target = closest_axis(-camera.global_transform.basis.z.normalized())
+		#print(target)
+		snap_gravity(target)
 	
 	if Input.is_action_just_pressed("secondary"):
 		var collider = raycast.get_collider()

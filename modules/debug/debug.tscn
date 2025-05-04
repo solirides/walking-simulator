@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://bypdp8h2h2oro"]
+
+[ext_resource type="Script" uid="uid://7tj88ys5lbl1" path="res://modules/debug/camera_3d.gd" id="1_pgqqi"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_31w3y"]
+
+[node name="Debug" type="Node3D"]
+
+[node name="Pivot" type="Node3D" parent="."]
+script = ExtResource("1_pgqqi")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Pivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.51046, 0.307126, -4.82435)
+mesh = SubResource("BoxMesh_31w3y")
+skeleton = NodePath("../Camera3D")
+
+[node name="Camera3D" type="Camera3D" parent="Pivot"]
