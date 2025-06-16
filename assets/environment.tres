@@ -1,24 +1,20 @@
 [gd_resource type="Environment" load_steps=3 format=3 uid="uid://b8mggfbmtah8k"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7uomk"]
-sky_top_color = Color(0.19966, 0.244789, 0.30755, 1)
-sky_horizon_color = Color(0.462645, 0.52692, 0.617676, 1)
-ground_bottom_color = Color(0.0871543, 0.0697184, 0.0494625, 1)
-ground_horizon_color = Color(0.310192, 0.334367, 0.378132, 1)
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1s15s"]
+sky_top_color = Color(0.368355, 0.425458, 0.701173, 1)
+sky_horizon_color = Color(0.829557, 0.793458, 0.767438, 1)
 
 [sub_resource type="Sky" id="Sky_ycmvf"]
-sky_material = SubResource("ProceduralSkyMaterial_7uomk")
+sky_material = SubResource("ProceduralSkyMaterial_1s15s")
 
 [resource]
 background_mode = 2
 sky = SubResource("Sky_ycmvf")
-ambient_light_sky_contribution = 0.0
-ambient_light_energy = 0.0
 tonemap_mode = 2
 ssr_enabled = true
 ssao_enabled = true
 ssil_enabled = true
 sdfgi_enabled = true
-sdfgi_min_cell_size = 0.1
+sdfgi_min_cell_size = 0.976562
 volumetric_fog_density = 0.0
 volumetric_fog_anisotropy = 0.5

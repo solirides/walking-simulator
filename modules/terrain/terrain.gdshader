@@ -68,7 +68,7 @@ void fragment() {
 	vec3 world_normal = abs(INV_VIEW_MATRIX * vec4(NORMAL, 0.0)).xyz;
 	vec3 normal_weights = world_normal / (world_normal.x + world_normal.y + world_normal.z);
 
-	vec3 triplanarized_slope_albedo = get_triplanarized_map(slope_albedo, projected_coords, normal_weights, slope_uv_scale * 0.01);
+	vec3 triplanarized_slope_albedo = get_triplanarized_map(slope_albedo, projected_coords + vec4(500,0,500,0), normal_weights, slope_uv_scale * 0.01);
 	vec3 triplanarized_slope_normal = get_triplanarized_map(slope_normal, projected_coords, normal_weights, slope_uv_scale * 0.01);
 	vec3 triplanarized_flat_albedo = get_triplanarized_map(flat_albedo, projected_coords, normal_weights, flat_uv_scale * 0.01);
 	vec3 triplanarized_flat_normal = get_triplanarized_map(flat_normal, projected_coords, normal_weights, flat_uv_scale * 0.01);

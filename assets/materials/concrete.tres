@@ -1,0 +1,32 @@
+[gd_resource type="StandardMaterial3D" load_steps=7 format=3 uid="uid://dpu82kk382lhe"]
+
+[ext_resource type="Texture2D" uid="uid://b2g20ou812kei" path="res://assets/textures/concrete/concrete_floor_worn_001_diff_1k.jpg" id="1_sbsb2"]
+[ext_resource type="Texture2D" uid="uid://crg165eceoa58" path="res://assets/textures/concrete/concrete_floor_worn_001_ao_1k.jpg" id="2_js2ku"]
+[ext_resource type="Texture2D" uid="uid://dbhiqgjobwreo" path="res://assets/textures/concrete/concrete_floor_worn_001_disp_1k.png" id="3_cqhk2"]
+[ext_resource type="Texture2D" uid="uid://bryhv0jp2cfyt" path="res://assets/textures/concrete/concrete_floor_worn_001_arm_1k.jpg" id="4_iskjp"]
+[ext_resource type="Texture2D" uid="uid://buxehaf1jc8fv" path="res://assets/textures/concrete/concrete_floor_worn_001_nor_gl_1k.jpg" id="5_fbrtm"]
+[ext_resource type="Texture2D" uid="uid://bnlnepum4itfo" path="res://assets/textures/concrete/concrete_floor_worn_001_rough_1k.jpg" id="6_mwy03"]
+
+[resource]
+albedo_texture = ExtResource("1_sbsb2")
+metallic = 1.0
+metallic_texture = ExtResource("4_iskjp")
+metallic_texture_channel = 2
+roughness_texture = ExtResource("6_mwy03")
+roughness_texture_channel = 1
+normal_enabled = true
+normal_texture = ExtResource("5_fbrtm")
+ao_enabled = true
+ao_texture = ExtResource("2_js2ku")
+heightmap_enabled = true
+heightmap_scale = -5.0
+heightmap_deep_parallax = true
+heightmap_min_layers = 8
+heightmap_max_layers = 32
+heightmap_texture = ExtResource("3_cqhk2")
+uv1_scale = Vector3(0.2, 0.2, 0.2)
+uv1_triplanar = true
+uv1_world_triplanar = true
+uv2_scale = Vector3(0.1, 0.1, 0.1)
+uv2_triplanar = true
+uv2_world_triplanar = true

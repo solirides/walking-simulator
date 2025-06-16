@@ -10,43 +10,49 @@ var jump_ready = true
 var roll_queued = false
 var roll_direction = 0
 var held_object:Node = null
-@onready var active_wieldable:Wieldable = $CameraPivot/Camera3D/Hands/Wieldable
-var fly = false
+@onready var active_wieldable:Wieldable = $CameraPivot/Shake/Camera3D/Hands/Wieldable
 var last_camera_pos = Vector3(0,0,0)
 var camera_pos = Vector3(0,0,0)
 var camera_time = 0
 
 #export var physics_rate = 1/60
 @export_category("Player")
-@export var mouse_sensitivity = 0.16
-@export var fov = 80.0
-@export var dynamic_fov = 12.0
-@export var dynamic_fov_min = 6.0
-@export var roll_sensitivity = 2
-@export var movement_speed = 600
+@export var mouse_sensitivity:float = 0.16
+@export var fov:float = 80.0
+@export var dynamic_fov:float = 12.0
+@export var dynamic_fov_min:float = 6.0
+@export var roll_sensitivity:float = 2
+@export var camera_sway:float = 2
+@export var lean_scale:float = 0.005
+@export var lean_angle:float = 0.04
+@export var lean_speed:float = 3
+@export var movement_speed:float = 600
 #export var max_speed = 14
 #export var acceleration_speed = 1000
 #@export var deceleration_speed = 0.1
-@export var drag = 0.1
-@export var ground_drag = 0.1
-@export var speed_cap = 10
-@export var gravity = 9.8
-@export var jump_speed = 6.0
-@export var hold_strength = 10.0
+@export var drag:float = 0.1
+@export var ground_drag:float = 0.1
+@export var speed_cap:float = 10
+@export var gravity:float = 9.8
+@export var jump_speed:float = 6.0
+@export var hold_strength:float = 10.0
+@export var fly:bool = false
 
 # controls camera yaw
 @export_category("Nodes")
 @onready var camera_pivot = $CameraPivot
+@onready var shake = $CameraPivot/Shake
 # controls camera pitch
-@onready var camera = $CameraPivot/Camera3D
-@onready var smooth_camera = $SmoothCamera
+@onready var camera = $CameraPivot/Shake/Camera3D
+@onready var smooth_camera = $CameraPivot/Shake/SmoothCamera
 #@onready var subviewport = $SubViewport
 @onready var feet_collision = $FeetCollision
 #onready var feet_area = $FeetArea
 @onready var jump_cooldown = $JumpCooldown
-@onready var raycast = $CameraPivot/Camera3D/RayCast3D
-@onready var hold_position = $CameraPivot/Camera3D/Marker3D
-@onready var hands = $CameraPivot/Camera3D/Hands
+@onready var sway_timer = $Sway
+@onready var raycast = $CameraPivot/Shake/Camera3D/RayCast3D
+@onready var hold_position = $CameraPivot/Shake/Camera3D/Marker3D
+@onready var hands = $CameraPivot/Shake/Camera3D/Hands
 @onready var hud = $HUD
 
 
@@ -87,22 +93,67 @@ func _process(delta):
 	#print("camera")
 	
 	hud.update_direction_gizmo(camera.global_basis, down_direction, closest_axis(camera.global_transform.basis.x.normalized()))
+	hud.update_velocity(camera.global_basis, down_direction, self.linear_velocity)
 	#camera.fov = fov + (linear_velocity.length() * 10)
 
 func _physics_process(delta):
 	time_delta = delta
 	#last_camera_pos = camera_pos
 	#camera_pos = camera.global_position
-
-	
 	
 	var direction = Vector3.ZERO
-	direction.z = Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
+	direction.z = Input.get_action_strength("move_backward") - Input.get_action_strength("move_forward")
 	direction.x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
 	direction = direction.normalized()
 	var velocity = camera_pivot.global_transform.basis * direction * movement_speed
 	velocity = (2 - linear_velocity.normalized().dot(velocity.normalized())) * velocity
 	velocity = max(speed_cap - linear_velocity.length(), 1) * velocity
+	
+	#if direction.x > 0:
+		#camera.rotation.z = lerp_angle(camera_pivot.rotation.z, deg_to_rad(-5), 0.05)
+	#elif direction.x < 0:
+		#camera.rotation.z = lerp_angle(camera_pivot.rotation.z, deg_to_rad(5), 0.05)
+	#else:
+		#camera.rotation.z = lerp_angle(camera_pivot.rotation.z, 0, 0.05)
+	
+	#var x_vel = velocity.dot(camera_pivot.global_transform.basis.x)
+	##print(x_vel)
+	##print(clamp(-x_vel * camera_lean / movement_speed, -max_lean, max_lean))
+	#if x_vel > 0:
+		#shake.rotation.z = lerp_angle(shake.rotation.z, clamp(-x_vel * camera_lean / movement_speed, -max_lean, max_lean), delta * lean_speed)
+		##shake.rotation.z = deg_to_rad(60)
+	#elif x_vel < 0:
+		#shake.rotation.z = lerp_angle(shake.rotation.z, clamp(-x_vel * camera_lean / movement_speed, -max_lean, max_lean) , delta * lean_speed)
+	#else:
+		#shake.rotation.z = lerp_angle(shake.rotation.z, 0, delta * lean_speed)
+	
+	#var lean_dir = -self.linear_velocity.cross(self.global_transform.basis.y).normalized()
+	#print(lean_dir)
+	#var current_rot = Quaternion(shake.global_transform.basis).normalized()
+##	var target_rot = Quaternion(Basis.looking_at(lean_dir, self.global_transform.basis.y)).normalized()
+	#var target_rot:Quaternion
+	#if lean_dir == Vector3.ZERO:
+		#target_rot = Quaternion(camera_pivot.global_transform.basis).normalized()
+	#else:
+		#target_rot = Quaternion(lean_dir, lean_angle).normalized()
+	#var smooth_rot = current_rot.slerp(target_rot, delta * lean_speed)
+	#shake.global_transform.basis = Basis(smooth_rot)
+	
+	
+	var lean_dir = -self.linear_velocity.cross(self.global_transform.basis.y).normalized()
+	#print(lean_dir)
+	var current_rot = shake.global_transform.basis
+#	var target_rot = Quaternion(Basis.looking_at(lean_dir, self.global_transform.basis.y)).normalized()
+	var target_rot:Basis
+	if lean_dir == Vector3.ZERO:
+		target_rot = camera_pivot.global_transform.basis
+	else:
+		target_rot = camera_pivot.global_transform.basis.rotated(lean_dir, clamp(linear_velocity.length() * lean_scale, -lean_angle, lean_angle))
+	var smooth_rot = current_rot.orthonormalized().slerp(target_rot.orthonormalized(), delta * lean_speed)
+	shake.global_transform.basis = smooth_rot
+	
+	camera.rotation.z = lerp(camera.rotation.z, 0.0, delta * 10)
+	
 	#if speed_cap - linear_velocity.length() > 0:
 		#velocity = (speed_cap - linear_velocity.length()) * velocity
 		#pass
@@ -126,6 +177,10 @@ func _physics_process(delta):
 	#apply_central_force(-self.global_transform.basis.y * 9.8 * mass)
 	
 	apply_central_force(mass * velocity * delta)
+	if fly == true:
+		var vertical_dir = Input.get_action_strength("move_up") - Input.get_action_strength("move_down")
+		var vertical_velocity = Vector3(0,vertical_dir * movement_speed,0)
+		apply_central_force(mass * vertical_velocity * delta)
 	apply_central_force(-linear_velocity * mass * drag)
 	
 #	print("pos " + str(self.translation))
@@ -136,9 +191,8 @@ func _physics_process(delta):
 		print(force)
 
 func _integrate_forces(state):
-	
-	#if fly:
-		#pass
+	if fly == true:
+		constant_force = Vector3.ZERO
 	#elif feet_collision.has_overlapping_bodies():
 ##		print("collide")
 ##		print(feet_area.get_overlapping_bodies())
@@ -233,7 +287,9 @@ func snap_gravity(target:Vector3):
 	if target == down_direction:
 		return
 	var rot_p = camera_pivot.global_rotation
-	var rot = camera.global_rotation
+	#var rot = camera.global_rotation
+	# intended to remove the effects of camera shake
+	var rot = camera.global_rotation * shake.basis.inverse()
 	
 	if target == -down_direction:
 		#self.rotate(down_direction.cross(target).normalized(), PI)
@@ -247,16 +303,9 @@ func snap_gravity(target:Vector3):
 		camera_pivot.rotation.x = 0
 		camera_pivot.rotation.z = 0
 		camera.global_rotation = rot
-		camera.rotation.z = 0
-		
-		#camera.global_rotation = rot
 		#camera.rotation.z = 0
-		#camera.global_rotation.x = rot.x
 		#camera.rotation.y = 0
-		#camera.rotation.z = 0
-		#camera_pivot.global_rotation.y = rot.y
-		#camera.rotation.x = 0
-		#camera.rotation.z = 0
+		
 
 func closest_axis(direction) -> Vector3:
 	var a = 0
@@ -296,6 +345,7 @@ func _input(event):
 		camera_pivot.rotate_y(deg_to_rad(-event.screen_relative.x * mouse_sensitivity))
 		camera.rotate_x(deg_to_rad(-event.screen_relative.y * mouse_sensitivity))
 		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90))
+		#camera.rotation.z = 0
 	
 	if Input.is_action_just_pressed("toggle_perspective"):
 		if camera.position.z != 0:
@@ -341,10 +391,16 @@ func _input(event):
 
 func _on_jump_cooldown_timeout():
 	jump_ready = true
-	print("jump ready")
+	#print("jump ready")
 	
 #func _on_viewport_changed():
 	#subviewport.size = get_viewport().size
 
 func logistic(x, c, k) -> float:
 	return 1.0 / (1.0 + 9 * pow(2, k * x)) - (1/(k + 1))
+
+#func toggle_fly(bool state):
+	#else:
+		#constant_force = gravity * self.mass * down_direction
+	
+	

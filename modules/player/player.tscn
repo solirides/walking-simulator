@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://rx21anmlp61m"]
+[gd_scene load_steps=18 format=3 uid="uid://rx21anmlp61m"]
 
 [ext_resource type="Script" uid="uid://w8a13g8of8vm" path="res://modules/player/player.gd" id="1_jrsqk"]
 [ext_resource type="PackedScene" uid="uid://bcqg7dq52goqk" path="res://modules/wieldable/wieldable.tscn" id="2_6x6i3"]
@@ -8,6 +8,11 @@
 friction = 0.0
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_jk3ei"]
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_m7q0d"]
+auto_exposure_enabled = true
+auto_exposure_min_sensitivity = 300.0
+auto_exposure_max_sensitivity = 1600.0
 
 [sub_resource type="BoxMesh" id="BoxMesh_m7q0d"]
 
@@ -23,6 +28,51 @@ roughness = 0.0
 [sub_resource type="CylinderMesh" id="CylinderMesh_m1p2u"]
 material = SubResource("StandardMaterial3D_8qkms")
 
+[sub_resource type="Animation" id="Animation_55gox"]
+length = 0.001
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CameraPivot/Shake")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0)
+
+[sub_resource type="Animation" id="Animation_m7q0d"]
+resource_name = "bob"
+length = 0.5
+loop_mode = 1
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CameraPivot/Shake")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array(0, 1, 0, 0, 0, 0.166667, 1, 0, -0.055, 0, 0.3, 1, 0, 0, 0, 0.4, 1, 0, 0.065, 0)
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ue0ku"]
+_data = {
+&"RESET": SubResource("Animation_55gox"),
+&"bob": SubResource("Animation_m7q0d")
+}
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_m7q0d"]
+animation = &"RESET"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_55gox"]
+animation = &"bob"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ue0ku"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_hd5yx"]
+states/RESET/node = SubResource("AnimationNodeAnimation_m7q0d")
+states/RESET/position = Vector2(578, 50)
+states/bob/node = SubResource("AnimationNodeAnimation_55gox")
+states/bob/position = Vector2(368, 50)
+transitions = ["bob", "RESET", SubResource("AnimationNodeStateMachineTransition_ue0ku")]
+
 [node name="Player" type="RigidBody3D"]
 collision_layer = 2
 collision_mask = 5
@@ -36,6 +86,8 @@ continuous_cd = true
 contact_monitor = true
 max_contacts_reported = 3
 script = ExtResource("1_jrsqk")
+lean_angle = 0.6
+lean_speed = 10.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CylinderShape3D_jk3ei")
@@ -43,25 +95,41 @@ shape = SubResource("CylinderShape3D_jk3ei")
 [node name="CameraPivot" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 
-[node name="Camera3D" type="Camera3D" parent="CameraPivot"]
+[node name="Shake" type="Node3D" parent="CameraPivot"]
+
+[node name="SmoothCamera" type="Camera3D" parent="CameraPivot/Shake"]
 fov = 80.0
 
-[node name="RayCast3D" type="RayCast3D" parent="CameraPivot/Camera3D"]
+[node name="Camera3D" type="Camera3D" parent="CameraPivot/Shake"]
+attributes = SubResource("CameraAttributesPractical_m7q0d")
+fov = 80.0
+
+[node name="RayCast3D" type="RayCast3D" parent="CameraPivot/Shake/Camera3D"]
 target_position = Vector3(0, 0, -10)
 collision_mask = 4
 
-[node name="Marker3D" type="Marker3D" parent="CameraPivot/Camera3D"]
+[node name="Marker3D" type="Marker3D" parent="CameraPivot/Shake/Camera3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
 
-[node name="Hands" type="Node3D" parent="CameraPivot/Camera3D"]
+[node name="Hands" type="Node3D" parent="CameraPivot/Shake/Camera3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.425, -0.21, -0.56)
 
-[node name="Wieldable" parent="CameraPivot/Camera3D/Hands" instance=ExtResource("2_6x6i3")]
+[node name="Wieldable" parent="CameraPivot/Shake/Camera3D/Hands" instance=ExtResource("2_6x6i3")]
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="CameraPivot/Camera3D"]
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="CameraPivot/Shake/Camera3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.75032, -0.137883, -3.94824)
+visible = false
 mesh = SubResource("BoxMesh_m7q0d")
-skeleton = NodePath("../../..")
+skeleton = NodePath("../../../..")
+
+[node name="DirectionalLight3D" type="SpotLight3D" parent="CameraPivot/Shake/Camera3D"]
+transform = Transform3D(0.860825, -0.107746, -0.497364, 0.259813, 0.933411, 0.247468, 0.437581, -0.342248, 0.831498, -2.88569, 0, -3.11759)
+visible = false
+light_color = Color(0.604217, 0.814879, 0.458006, 1)
+light_energy = 16.0
+shadow_enabled = true
+spot_range = 8.78816
+spot_angle = 23.3032
 
 [node name="FeetCollision" type="Area3D" parent="."]
 collision_layer = 0
@@ -81,6 +149,13 @@ mesh = SubResource("CylinderMesh_m1p2u")
 
 [node name="HUD" parent="." instance=ExtResource("3_3gt3i")]
 
-[node name="SmoothCamera" type="Camera3D" parent="."]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_ue0ku")
+}
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+tree_root = SubResource("AnimationNodeStateMachine_hd5yx")
+anim_player = NodePath("../AnimationPlayer")
 
 [connection signal="timeout" from="JumpCooldown" to="." method="_on_jump_cooldown_timeout"]

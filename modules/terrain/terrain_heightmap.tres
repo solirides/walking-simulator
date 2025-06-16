@@ -2,4 +2,6 @@
 
 [resource]
 frequency = 0.0016
-fractal_octaves = 7
+fractal_octaves = 9
+fractal_lacunarity = 2.2
+fractal_gain = 0.53

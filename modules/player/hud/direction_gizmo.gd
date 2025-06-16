@@ -25,3 +25,6 @@ func _draw():
 	var roll = (gizmo_roll_direction * 40) * gizmo_basis
 	draw_circle(Vector2(roll.x, -roll.y), 4, Color(1,0.3,1,0.8), true, -1.0, false)
 	draw_circle(Vector2(-roll.x, roll.y), 4, Color(0.3,1,1,0.8), true, -1.0, false)
+	
+	var down = (gizmo_down * 60) * gizmo_basis
+	draw_circle(Vector2(down.x, -down.y), 4, Color(0.9,1,0.9,0.8), true, -1.0, false)

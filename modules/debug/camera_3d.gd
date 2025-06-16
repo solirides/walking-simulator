@@ -17,5 +17,7 @@ func _input(event):
 		self.rotate_y(deg_to_rad(-event.screen_relative.x * mouse_sensitivity))
 		self.rotate_x(deg_to_rad(-event.screen_relative.y * mouse_sensitivity))
 		self.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90))
+		#self.force_update_transform()
+		#$MeshInstance3D.force_update_transform()
 		
 	

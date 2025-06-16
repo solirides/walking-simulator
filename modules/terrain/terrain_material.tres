@@ -1,9 +1,11 @@
-[gd_resource type="ShaderMaterial" load_steps=10 format=3 uid="uid://cgqkx4ojlnnqr"]
+[gd_resource type="ShaderMaterial" load_steps=12 format=3 uid="uid://cgqkx4ojlnnqr"]
 
-[ext_resource type="Shader" uid="uid://cqknvq4xl0vs8" path="res://modules/terrain/terrain.gdshader" id="1_jrt4t"]
+[ext_resource type="Shader" uid="uid://dbxgx664x355u" path="res://modules/terrain/terrain_2.gdshader" id="1_jrt4t"]
 [ext_resource type="FastNoiseLite" uid="uid://dwqal0ny851pp" path="res://modules/terrain/terrain_heightmap.tres" id="2_cu424"]
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_u1rea"]
+width = 2048
+height = 2048
 as_normal_map = true
 noise = ExtResource("2_cu424")
 
@@ -16,6 +18,16 @@ noise = ExtResource("2_cu424")
 as_normal_map = true
 noise = ExtResource("2_cu424")
 
+[sub_resource type="Gradient" id="Gradient_jrt4t"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.0431655, 0.959233, 1)
+colors = PackedColorArray(0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_cu424"]
+gradient = SubResource("Gradient_jrt4t")
+width = 2048
+height = 2048
+
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_fpiom"]
 frequency = 0.1664
 
@@ -23,6 +35,8 @@ frequency = 0.1664
 noise = SubResource("FastNoiseLite_fpiom")
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1k27a"]
+width = 2048
+height = 2048
 as_normal_map = true
 noise = ExtResource("2_cu424")
 
@@ -34,12 +48,13 @@ noise = ExtResource("2_cu424")
 [resource]
 render_priority = 0
 shader = ExtResource("1_jrt4t")
+shader_parameter/mesh_size = 1000.0
 shader_parameter/heightmap = SubResource("NoiseTexture2D_nc45s")
 shader_parameter/heightmap_normals = SubResource("NoiseTexture2D_j630w")
 shader_parameter/heightmap_normals_intensity = 1.0
 shader_parameter/splatmap = SubResource("NoiseTexture2D_jrt4t")
-shader_parameter/heightmap_scale = 1.0
-shader_parameter/heightmap_height_scale = 0.1
+shader_parameter/heightmap_scale = 5.0
+shader_parameter/heightmap_height_scale = 500.0
 shader_parameter/slope_edge_1 = 0.184
 shader_parameter/slope_edge_2 = 0.448
 shader_parameter/slope_edge_3 = 0.686
@@ -51,11 +66,12 @@ shader_parameter/slope_color_remap_bottom = Color(0, 0, 0, 1)
 shader_parameter/flat_color_remap_top = Color(0.708427, 0.924776, 0.931743, 1)
 shader_parameter/flat_color_remap_bottom = Color(0, 0, 0, 1)
 shader_parameter/flat_normal = SubResource("NoiseTexture2D_u1rea")
-shader_parameter/flat_uv_scale = 1.0
-shader_parameter/flat_normal_scale = 1.0
+shader_parameter/flat_uv_scale = 1000.0
+shader_parameter/flat_normal_scale = 0.0
+shader_parameter/slope_albedo = SubResource("GradientTexture2D_cu424")
 shader_parameter/slope_normal = SubResource("NoiseTexture2D_1k27a")
-shader_parameter/slope_uv_scale = 1.0
-shader_parameter/slope_normal_scale = 1.0
+shader_parameter/slope_uv_scale = 1000.0
+shader_parameter/slope_normal_scale = 0.0
 shader_parameter/flat_specular = 0.0
 shader_parameter/flat_roughness = 0.539
 shader_parameter/flat_metallic = 0.0

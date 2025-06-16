@@ -1,8 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://bypdp8h2h2oro"]
+[gd_scene load_steps=4 format=3 uid="uid://bypdp8h2h2oro"]
 
 [ext_resource type="Script" uid="uid://7tj88ys5lbl1" path="res://modules/debug/camera_3d.gd" id="1_pgqqi"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_31w3y"]
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_pgqqi"]
 
 [node name="Debug" type="Node3D"]
 
@@ -15,3 +17,4 @@ mesh = SubResource("BoxMesh_31w3y")
 skeleton = NodePath("../Camera3D")
 
 [node name="Camera3D" type="Camera3D" parent="Pivot"]
+attributes = SubResource("CameraAttributesPractical_pgqqi")

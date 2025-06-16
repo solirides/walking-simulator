@@ -5,8 +5,9 @@
 [ext_resource type="Environment" uid="uid://b8mggfbmtah8k" path="res://assets/environment.tres" id="1_uf4vd"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_7nt5j"]
-subdivide_width = 100
-subdivide_depth = 100
+size = Vector2(1000, 1000)
+subdivide_width = 128
+subdivide_depth = 128
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_jioox"]
 
@@ -23,30 +24,40 @@ timer = NodePath("Timer")
 environment = ExtResource("1_uf4vd")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.622608, 0.0362342, 0.781694, 0.60196, 0.660445, 0.448838, -0.500003, 0.749999, -0.43301, 0, 37.333, 0)
+transform = Transform3D(-0.507751, 0.151167, 0.848138, 0.70156, 0.643933, 0.305229, -0.500003, 0.749999, -0.43301, 0, 97.0102, 0)
 light_color = Color(0.960299, 0.961338, 0.953577, 1)
 shadow_enabled = true
+directional_shadow_blend_splits = true
+directional_shadow_max_distance = 1000.0
 
 [node name="Timer" type="Timer" parent="."]
 
 [node name="Mesh" type="MeshInstance3D" parent="."]
-transform = Transform3D(1000, 0, 0, 0, 1000, 0, 0, 0, 1000, 0, 0, 0)
 mesh = SubResource("PlaneMesh_7nt5j")
 surface_material_override/0 = ExtResource("1_0rasl")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 17.3092, -4.06619)
-visible = false
 mesh = SubResource("CapsuleMesh_jioox")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
-collision_layer = 7
-collision_mask = 7
+collision_layer = 0
+collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
 shape = SubResource("HeightMapShape3D_kn0b6")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.812033, 0.583612, 0, -0.583612, 0.812033, -30.637, 157.554, 373.891)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.936188, 0.351499, 0, -0.351499, 0.936188, 0, 5.19527, 25.1017)
+light_energy = 1000.0
+shadow_enabled = true
+shadow_reverse_cull_face = true
+spot_range = 982.951
+spot_angle = 15.0
+
+[node name="LightmapGI" type="LightmapGI" parent="."]
 
 [connection signal="ready" from="Mesh" to="." method="_on_mesh_instance_3d_ready"]
