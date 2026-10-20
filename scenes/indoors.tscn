@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://qtpyx5gv1e1k"]
+[gd_scene format=3 uid="uid://qtpyx5gv1e1k"]
 
 [ext_resource type="PackedScene" uid="uid://rx21anmlp61m" path="res://modules/player/player.tscn" id="1_ifhjv"]
 [ext_resource type="Material" uid="uid://dpu82kk382lhe" path="res://assets/materials/concrete.tres" id="2_fxp1n"]
@@ -30,67 +30,68 @@ height = 2.0
 [sub_resource type="PlaneMesh" id="PlaneMesh_jxjax"]
 size = Vector2(6, 11)
 
-[node name="Indoors" type="Node3D"]
+[node name="Indoors" type="Node3D" unique_id=1944261610]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1184323616]
 environment = SubResource("Environment_fxp1n")
 
-[node name="Player" parent="." instance=ExtResource("1_ifhjv")]
+[node name="Player" parent="." unique_id=1499453087 instance=ExtResource("1_ifhjv")]
 
-[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="." unique_id=1625142885]
 material_override = ExtResource("2_fxp1n")
+cast_shadow = 2
 use_collision = true
 
-[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1040597711]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.0994, -2, 20.5854)
 size = Vector3(35.1987, 1, 72.1708)
 
-[node name="CSGBox3D4" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D4" type="CSGBox3D" parent="CSGCombiner3D" unique_id=787311483]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 6, -7)
 size = Vector3(10, 1, 17)
 
-[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D" unique_id=760051235]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 5, -14.5)
 size = Vector3(19, 15, 2)
 
-[node name="CSGBox3D3" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1933643538]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 5, -5.5)
 size = Vector3(1, 15, 20)
 
-[node name="CSGSphere3D" type="CSGSphere3D" parent="CSGCombiner3D"]
+[node name="CSGSphere3D" type="CSGSphere3D" parent="CSGCombiner3D" unique_id=2003750727]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, 0)
 radius = 3.0
 radial_segments = 20
 rings = 12
 
-[node name="CSGSphere3D2" type="CSGSphere3D" parent="CSGCombiner3D"]
+[node name="CSGSphere3D2" type="CSGSphere3D" parent="CSGCombiner3D" unique_id=1519443456]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2, 2)
 operation = 2
 radius = 3.0
 radial_segments = 20
 rings = 12
 
-[node name="CSGMesh3D" type="CSGMesh3D" parent="CSGCombiner3D"]
+[node name="CSGMesh3D" type="CSGMesh3D" parent="CSGCombiner3D" unique_id=1860343095]
 transform = Transform3D(-5.96046e-08, 0, 1, 0, 1, 0, -1, 0, -5.96046e-08, 18, 0, 7)
 mesh = SubResource("PrismMesh_fxp1n")
 
-[node name="CSGBox3D5" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D5" type="CSGBox3D" parent="CSGCombiner3D" unique_id=112185544]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28.9057, 6, 31.4832)
 size = Vector3(5, 17, 18)
 
-[node name="CSGBox3D6" type="CSGBox3D" parent="CSGCombiner3D"]
+[node name="CSGBox3D6" type="CSGBox3D" parent="CSGCombiner3D" unique_id=880173033]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28.9057, 5, 32.9832)
 operation = 2
 size = Vector3(11, 9, 5)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="."]
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1306779684]
 
-[node name="OmniLight3D" type="OmniLight3D" parent="."]
+[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=1898537461]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.71911, 0)
 shadow_enabled = true
 omni_range = 20.0
 
-[node name="SpotLight3D" type="SpotLight3D" parent="."]
+[node name="SpotLight3D" type="SpotLight3D" parent="." unique_id=1740624369]
 transform = Transform3D(0.977109, 0.030071, -0.210605, 0.054968, 0.920658, 0.386482, 0.205517, -0.389211, 0.89793, 0, 5.34029, 23.7939)
 light_color = Color(0.44, 0.813333, 1, 1)
 light_energy = 5.0
@@ -98,7 +99,7 @@ shadow_enabled = true
 spot_range = 40.0
 spot_angle = 21.74
 
-[node name="SpotLight3D2" type="SpotLight3D" parent="."]
+[node name="SpotLight3D2" type="SpotLight3D" parent="." unique_id=1546570758]
 transform = Transform3D(-0.50302, -0.392373, 0.770074, 0, 0.891007, 0.453991, -0.864275, 0.228366, -0.448194, 7.35934, 5.36613, -12.8826)
 light_color = Color(0.98, 0.3234, 0.476607, 1)
 light_energy = 11.894
@@ -106,22 +107,22 @@ shadow_enabled = true
 spot_range = 36.142
 spot_angle = 56.13
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=948866060]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.48347, -9.16645)
 mesh = SubResource("SphereMesh_647ch")
 
-[node name="FakeAreaLight" type="MeshInstance3D" parent="."]
+[node name="FakeAreaLight" type="MeshInstance3D" parent="." unique_id=2001300044]
 transform = Transform3D(-4.37114e-08, -1, -4.37114e-08, 0, -4.37114e-08, 1, -1, 4.37114e-08, 1.91069e-15, 31, 5, 33)
 mesh = SubResource("PlaneMesh_jxjax")
 surface_material_override/0 = ExtResource("3_647ch")
 
-[node name="FakeAreaLight2" type="MeshInstance3D" parent="."]
+[node name="FakeAreaLight2" type="MeshInstance3D" parent="." unique_id=38113413]
 transform = Transform3D(-4.37114e-08, -1, -4.37114e-08, 0, -4.37114e-08, 1, -1, 4.37114e-08, 1.91069e-15, 32, 5, 10)
 visible = false
 mesh = SubResource("PlaneMesh_jxjax")
 surface_material_override/0 = ExtResource("3_647ch")
 
-[node name="SpotLight3D3" type="SpotLight3D" parent="."]
+[node name="SpotLight3D3" type="SpotLight3D" parent="." unique_id=47154774]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 50, 4, 33)
 light_energy = 20.7
 light_size = 10.0
