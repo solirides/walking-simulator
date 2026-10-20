@@ -1,5 +1,7 @@
 # Walking Simulator
 
+## Description
+
 An experimental game with a complex physics-based character controller. Includes bunny hopping, gravity switching, and of course some QOL leaning and viewbobbing animations.
 
 | Movement | Bunny‑hop | Gravity switch |
